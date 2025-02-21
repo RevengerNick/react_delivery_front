@@ -1,15 +1,11 @@
 import api from "@/utils/axiosInstance";
 import { useEffect, useState } from "react";
-import { SelectedPage } from "@/types/SelectedPage";
-import Navbar from "../Navbar";
 import DishCard from "@/utils/dishCard";
 import { Dish } from "@/types/dishInterface";
 
-type Props = {
 
-};
 
-const Cart = ({  }: Props) => {
+const Cart = () => {
   const [dishesCart, setDishesCart] = useState<Dish[]>([]);
 
   useEffect(() => {

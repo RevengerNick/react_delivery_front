@@ -1,9 +1,8 @@
 import api from '@/utils/axiosInstance'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
-type Props = {}
 
-const index = (props: Props) => {
+const index = () => {
   const [profileData, setProfileData] = useState<{email: string, name: string, role: string}>({email: "", name: "", role: ""});
 
   useEffect(() => {

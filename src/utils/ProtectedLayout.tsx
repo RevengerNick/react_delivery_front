@@ -1,5 +1,4 @@
-import { Navigate, Outlet, useLocation } from "react-router-dom";
-import AuthForm from "../scripts/AuthForm";
+import { Navigate, Outlet} from "react-router-dom";
 
 const ProtectedLayout = () => {
   const token = localStorage.getItem("accessToken");

@@ -1,5 +1,6 @@
 export enum SelectedPage {
-    Main = "Ваши заказы",
+    Main = "Главная",
+    Cart = "Корзина",
     History = "История",
     Discounts = "Мои скидки",
     Addresses = "Адреса доставки",

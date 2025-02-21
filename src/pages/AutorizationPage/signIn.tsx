@@ -2,6 +2,7 @@ import { useState } from "react";
 import eye from "@/assets/pass/eye.svg";
 import eyeOff from "@/assets/pass/eyeOff.svg";
 
+
 type Props = {
   changeData: React.ChangeEventHandler<HTMLInputElement>;
   submitData: (e: React.FormEvent<HTMLFormElement>) => void;
@@ -14,6 +15,7 @@ type Props = {
 };
 
 const SignIn = ({ setIsLogin, changeData, submitData, formData }: Props) => {
+
   const [showPassword, setShowPassword] = useState(false);
   return (
     <div>

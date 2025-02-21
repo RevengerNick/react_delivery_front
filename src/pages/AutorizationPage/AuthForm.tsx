@@ -1,9 +1,11 @@
 import { useState } from "react";
-import SignUp from "./signUp";
-import SignIn from "./signIn";
+import SignUp from "@/pages/AutorizationPage/signUp";
+import SignIn from "@/pages/AutorizationPage/signIn";
 import foodDay from "@/assets/foodDay.svg";
 import { motion } from "framer-motion";
-import api from "../utils/axiosInstance";
+import api from "@/utils/axiosInstance";
+import { ToastContainer, toast } from "react-toastify";
+//import "react-toastify/dist/ReactToastify.css";
 
 type Props = {};
 
@@ -16,6 +18,22 @@ const AuthForm = ({}: Props) => {
     password: "",
   });
 
+  const showToast = (
+    text: string,
+    time: number,
+    type: "success" | "error" | "info" | "warning" = "info",
+  ) => {
+    console.log("toast")
+    toast[type](text, {
+      position: "bottom-center",
+      autoClose: time*1000, // Через 3 секунды закроется
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+    });
+  };
+
   const signInButton = () => {
     api
       .post("/auth/login", {
@@ -25,12 +43,16 @@ const AuthForm = ({}: Props) => {
       .then(function (response) {
         console.log(response.status);
         if (response.status === 201) {
+          showToast("Вы успешно вошли в аккаунт, перенаправление.", 2, "success");
           localStorage.setItem("accessToken", response.data.access_token);
           window.location.href = "/dashboard"
           //setAccessToken(response.data.access_token);
+        } if (response.status === 401) {
+          showToast("Неправильный логин или пароль", 3, "error");
         }
       })
       .catch(function (error) {
+        showToast("Неправильный логин или пароль", 3, "error");
         console.log(error);
       });
   };
@@ -40,10 +62,18 @@ const AuthForm = ({}: Props) => {
       api
         .post("/auth/register", formData)
         .then(function (response) {
-          console.log(response.data);
+          console.log
+          if (response.status === 500) {
+            showToast("Пользователь с такой почтой уже существует", 3, "error");
+          }
+          if (response.status === 201) {
+            showToast("Вы успешно зарегистрированы", 3, "success");
+            signInButton();
+          }
         })
         .catch(function (error) {
-          console.log(error);
+          showToast("Пользователь с такой почтой уже существует", 3, "error");
+          console.log(error)
         });
     }
   };
@@ -103,6 +133,7 @@ const AuthForm = ({}: Props) => {
             )}
           </div>
         </div>
+        <ToastContainer />
       </motion.div>
     </div>
   );

@@ -1,4 +1,4 @@
-type Props = {}
+
 
 const index = () => {
   return (

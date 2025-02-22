@@ -10,17 +10,17 @@ const api = axios.create({
 });
 
 
-// api.interceptors.response.use(
-//   (response) => response, // Если ответ успешный, просто возвращаем его
-//   (error) => {
-//     if (error.response && error.response.status === 401) {
-//       console.log("Ошибка 401: Токен недействителен. Удаляем из localStorage.");
-//       localStorage.removeItem("accessToken"); // Удаляем токен
-//       window.location.href = "/login"; // Перенаправляем на страницу входа
-//     }
-//     return Promise.reject(error);
-//   }
-// );
+api.interceptors.response.use(
+  (response) => response, // Если ответ успешный, просто возвращаем его
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      console.log("Ошибка 401: Токен недействителен. Удаляем из localStorage.");
+      localStorage.removeItem("accessToken"); // Удаляем токен
+      window.location.href = "/login"; // Перенаправляем на страницу входа
+    }
+    return Promise.reject(error);
+  }
+);
 
 api.interceptors.request.use(
   (config) => {

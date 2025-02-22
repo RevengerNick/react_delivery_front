@@ -1,18 +1,32 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import addCart from "@/assets/buttons/addCart.svg"
+import api from "./axiosInstance";
 
 type Props = {
   initialCount?: number;
+  id: number;
 }
 
-const СounterButton = ({ initialCount = 0 }: Props) => {
+const СounterButton = ({ id, initialCount = 0 }: Props) => {
   const [count, setCount] = useState(initialCount);
 
+  const addToCart = (id: any) => {
+    
+    api.post("/cart", { dishId: id, quantity: 1 })
+  .then((response) => {
+    if (response.status === 201) { // Проверяем status
+      setCount(1); // Предполагаю, что setCount обновляет состояние
+    }
+    console.log(response.data); // Данные ответа
+  })
+  .catch((error) => console.error("Ошибка:", error));
+  }
+
   return (
-    initialCount !== 0 ? (
+    count !== 0 ? (
       <div className="flex items-center rounded-lg w-24 bg-gray-200 justify-between">
         <button
-          className="w-full text-gray-700 rounded-l-xl hover:bg-gray-300"
+          className="w-full text-2xl text-gray-700 rounded-l-xl hover:bg-gray-300"
           onClick={() => setCount((prev) => Math.max(1, prev - 1))}
         >
           -
@@ -27,7 +41,7 @@ const СounterButton = ({ initialCount = 0 }: Props) => {
           }}
         />
         <button
-          className="w-full text-gray-700 rounded-r-xl hover:bg-gray-300"
+          className="w-full text-2xl text-gray-700 rounded-r-xl hover:bg-gray-300"
           onClick={() => setCount((prev) => prev + 1)}
         >
           +
@@ -35,7 +49,10 @@ const СounterButton = ({ initialCount = 0 }: Props) => {
       </div>
     ) : (
       <div className="relative">
-        <button className="absolute right-[2vw] -translate-y-12">
+        <button className="absolute right-[2vw] -translate-y-12"
+          onClick={() => addToCart(id)}
+        >
+          
           <img src={addCart} alt="1" className="size-10"/>
         </button>
       </div>

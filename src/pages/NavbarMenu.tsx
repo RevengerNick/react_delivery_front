@@ -1,5 +1,6 @@
 import { SelectedPage } from "@/types/SelectedPage";
 import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 type Props = {
@@ -16,14 +17,25 @@ const NavbarMenu = ({
   setIsMenuToggled,
 }: Props) => {
   const navigate = useNavigate();
+  const menuRef = useRef<HTMLDivElement>(null);
+  const handleClickOutsideDish = (e: MouseEvent) => {
+    if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+      setIsMenuToggled(false);
+    }
+  };
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutsideDish);
+    return () =>
+      document.removeEventListener("mousedown", handleClickOutsideDish);
+  }, []);
 
   const buttonClass =
-    "text-lg font-semibold p-2 py-2 hover:bg-gray-200 w-[40vw] active:bg-gray-400 rounded-2xl duration-400";
+    "w-full   text-lg font-semibold p-2 py-2 hover:bg-gray-200 w-[40vw] active:bg-gray-400 rounded-2xl duration-400";
 
   return (
     <AnimatePresence>
       {isMenuToggled && (
-        <div className="  overflow-auto">
+        <div className="overflow-auto w-full">
           <motion.div
             className="fixed inset-0 bg-black/30 -z-10 backdrop-blur-3xs"
             initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
@@ -32,6 +44,7 @@ const NavbarMenu = ({
             transition={{ duration: 0.3 }}
           >
             <div
+              ref={menuRef}
               style={{ maxHeight: "calc(100vh - 100px)" }}
               className="absolute top-22 left-8 h-full rounded-3xl shadow-2xl overflow-auto
                      w-[70vw] min-w-[200px] bg-gray-50 text-center"

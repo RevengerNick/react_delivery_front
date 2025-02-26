@@ -24,9 +24,9 @@ const MainPage = (props: Props) => {
         <div className="sticky top-0 left-0 w-full bg-gray-100 z-45 shadow-md rounded-b-2xl">
           <Navbar
             setIsMenuToggled={setIsMenuToggled}
+            isMenuToggled={isMenuToggled}
             selectedPage={selectedPage}
             setSelectedPage={setSelectedPage}
-            isMenuToggled={isMenuToggled}
           />
         </div>
         <Outlet />

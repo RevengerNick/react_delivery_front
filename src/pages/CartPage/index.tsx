@@ -4,10 +4,12 @@ import DishCard from "@/utils/dishCard";
 import { Dish } from "@/types/dishInterface";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import DishPage from "@/utils/dishPage"
 
 const Cart = () => {
   const navigate = useNavigate();
   const [dishesCart, setDishesCart] = useState<Dish[]>([]);
+  const [isDishToggled, setIsDishToggled] = useState(false);
 
   const [isOpen, setIsOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -58,7 +60,8 @@ const Cart = () => {
           </button>
         </div>
       ) : (
-        dishesCart.map((dish) => <DishCard key={dish.id} {...dish} />)
+        dishesCart.map((dish) => <DishCard key={dish.id} {...dish}  setIsDishToggled={setIsDishToggled}
+        isDishToggled={isDishToggled} />)
       )}
 
       <motion.div
@@ -91,6 +94,10 @@ const Cart = () => {
           )}
         </div>
       </motion.div>
+      <DishPage
+        setIsDishToggled={setIsDishToggled}
+        isDishToggled={isDishToggled}
+      />
     </div>
   );
 };

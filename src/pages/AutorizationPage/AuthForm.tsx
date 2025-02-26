@@ -84,6 +84,7 @@ const AuthForm = ({}: Props) => {
 
   const submitData = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("yes")
     {
       isLogin ? signInButton() : signUpButton();
     }

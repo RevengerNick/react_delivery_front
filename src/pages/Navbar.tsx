@@ -3,13 +3,13 @@ import Menu from "@/assets/buttons/menu.svg";
 import Cancel from "@/assets/buttons/cancel.svg";
 import Cart from "@/assets/buttons/cart.svg";
 import Trash from "@/assets/buttons/trash.svg";
-import { AnimatePresence, motion } from "framer-motion";
 import { SelectedPage } from "@/types/SelectedPage";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ConfirmButton from "@/utils/ConfirmButton";
 import api from "@/utils/axiosInstance";
 import NavbarMenu from "./NavbarMenu";
+import DishPage from "@/utils/dishPage";
 
 type Props = {
   selectedPage: string;
@@ -26,6 +26,7 @@ const Navbar = ({
 }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isTrashOpen, setIsTrashOpen] = useState(false);
+
   const location = useLocation();
 
   const isCartPage = location.pathname === "/cart";
@@ -82,17 +83,22 @@ const Navbar = ({
       >
         <img src={isCartPage ? Trash : Cart} alt="" className="size-10" />
       </button>
-      <button
-        type="button"
-        onClick={() => setIsMenuToggled(!isMenuToggled)}
-        className="absolute left-[3vw] translate-y-1"
-      >
-        {!isMenuToggled ? (
-          <img src={Menu} alt="" className="size-10" />
-        ) : (
-          <img src={Cancel} alt="" className="size-10" />
-        )}
-      </button>
+      {!isMenuToggled ? (
+        <button
+          type="button"
+          onClick={() => setIsMenuToggled(true)}
+          className="absolute left-[3vw] translate-y-1"
+        >
+          {!isMenuToggled && <img src={Menu} alt="" className="size-10" />}
+        </button>
+      ) : (
+        <img
+          src={Cancel}
+          alt=""
+          className="absolute left-[3vw] translate-y-1 size-10"
+        />
+      )}
+
       <NavbarMenu
         setIsMenuToggled={setIsMenuToggled}
         setSelectedPage={setSelectedPage}

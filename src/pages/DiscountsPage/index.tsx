@@ -1,8 +1,4 @@
-import React from 'react'
-
-type Props = {}
-
-const index = (props: Props) => {
+const index = () => {
   return (
     <div>Все бесценно дорого, никаких скидок</div>
   )

@@ -1,75 +1,64 @@
 import DishCard from "@/utils/dishCard";
-import { Dish } from "@/types/dishInterface";
-import { useEffect, useState } from "react";
-import api from "@/utils/axiosInstance";
-import DishPage from "@/utils/dishPage";
+import { useState } from "react";
+import QuestionTooltip from "@/utils/QuestionToolTip";
+import useFetchMenu from "@/utils/useFetchMenu";
+import { motion } from "framer-motion";
 
 const Main = () => {
-  const [allDishes, setAllDishes] = useState<Dish[]>([]);
-  const [isDishToggled, setIsDishToggled] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const [fuzzySearch, setFuzzySearch] = useState(false);
+  const [refresh, setRefresh] = useState(0);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Параллельно загружаем данные о блюдах и корзине
-        const [dishesResponse, cartResponse] = await Promise.all([
-          api.get("/dishes"),
-          api.get("/cart"),
-        ]);
+  // Используем useFetchMenu для получения данных
+  const { data: allDishes, loading, error } = useFetchMenu(refresh, searchText, setFuzzySearch, setIsSearching);
 
-        // Форматируем данные о блюдах с dishId вместо id
-        const formattedDishes = dishesResponse.data.map((dish: any) => ({
-          dishId: dish.id, // Переименовываем id в dishId
-          name: dish.name,
-          price: dish.price,
-          imageUrl: import.meta.env.VITE_API_BASE + dish.imageUrl,
-          quantity: 0, // По умолчанию 0
-        }));
+  const changeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.target.value);
+  };
 
-        // Форматируем данные о корзине в Map, где ключ — dishId, значение — объект с id и quantity
-        const cartMap = new Map<number, CartItem>(
-          cartResponse.data.items.map((item: any) => [
-            item.dishId,
-            { id: item.Id, quantity: item.quantity },
-          ])
-        );
+  const writeDishes = () => {
+    if (!allDishes) return null; // Если данных ещё нет
+    return allDishes.map((dish, index) => (
+      <motion.div
+        key={dish.id}
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, ease: "easeOut", delay: index * 0.1 }}
+        className="w-full"
+      >
+        <DishCard {...dish} setRefresh={setRefresh} />
+      </motion.div>
+    ));
+  };
 
-        interface CartItem {
-          id: number; // id из корзины
-          quantity: number;
-        }
-        const mergedDishes: Dish[] = formattedDishes.map((dish: any) => {
-          const cartItem = cartMap.get(dish.dishId); // Теперь cartItem: CartItem | undefined
-          return {
-            ...dish,
-            id: cartItem ? cartItem.id : undefined, // TypeScript знает, что id есть
-            quantity: cartItem ? cartItem.quantity : 0,
-          };
-        });
-
-        // Устанавливаем объединённый массив
-        setAllDishes(mergedDishes);
-      } catch (error) {
-        console.error("Ошибка загрузки данных:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
   return (
-    <div className="flex min-w-60 flex-col pb-2">
-      {allDishes.map((dish) => (
-        <DishCard
-          key={dish.dishId}
-          {...dish}
-          setIsDishToggled={setIsDishToggled}
-          isDishToggled={isDishToggled}
-        />
-      ))}
-      <DishPage
-        setIsDishToggled={setIsDishToggled}
-        isDishToggled={isDishToggled}
+    <div className="flex min-w-60 flex-col pb-2 items-center">
+      <div className="absolute translate-x-[20vw] translate-y-2">
+        {fuzzySearch && (
+          <QuestionTooltip text="Поиск не дал результатов, поэтому используется нечеткий поиск" />
+        )}
+      </div>
+      <input
+        type="text"
+        name="Search"
+        placeholder="Что ищем?"
+        value={searchText}
+        onChange={changeSearch}
+        className="p-1 w-[95vw] bg-gray-200 rounded-2xl text-center shadow-xs"
       />
+
+      {loading ? (
+        <div className="flex flex-col justify-center items-center h-32">
+          <div className="w-8 h-8 border-4 border-t-blue-500 border-gray-200 rounded-full animate-spin"></div>
+          <p>Подождите немного</p>
+        </div>
+      ) : error ? (
+        <p className="text-red-500 p-2 text-3xl bg-amber-300 rounded-3xl m-2">Ошибка: {error}</p>
+      ) : (
+        writeDishes()
+      )}
+      <p>всего {allDishes && allDishes.length} блюд</p>
     </div>
   );
 };

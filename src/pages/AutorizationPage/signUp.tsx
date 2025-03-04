@@ -52,14 +52,14 @@ const SignUp = ({ setIsLogin, changeData, submitData, formData }: Props) => {
           <button
             type="button"
             className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center justify-center w-6 h-6 hover:opacity-85  duration-100"
-            onMouseDown={() => setShowPassword(true)} // Когда зажали кнопку – показываем пароль
-            onMouseUp={() => setShowPassword(false)} // Когда отпустили – скрываем
-            onMouseLeave={() => setShowPassword(false)}
+            onMouseDown={() => setShowPassword(true)}
+            onMouseUp={() => setShowPassword(false)} 
+            //onMouseLeave={() => setShowPassword(false)}
           >
             {showPassword ? (
-              <img src={eye} alt="" />
+              <img src={eye} alt="" className=" pointer-events-none" />
             ) : (
-              <img src={eyeOff} alt="" />
+              <img src={eyeOff} alt="" className=" pointer-events-none" />
             )}
           </button>
         </div>

@@ -9,9 +9,9 @@ const index = () => {
 }, [])
   return (
     <div className='items-center p-4'>
-      <h2 className='text-center'>{"Ты " + profileData.name } </h2>
-      <h2 className='text-center'>{"Email " + profileData.email} </h2>
-      <h2 className='text-center'>{"Вывод: ты " + profileData.role} </h2>
+      <h2>{"Ты " + profileData.name } </h2>
+      <h2>{"Email " + profileData.email} </h2>
+      <h2>{"Вывод: ты " + profileData.role} </h2>
     </div>
   )
 }

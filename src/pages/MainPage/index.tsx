@@ -18,20 +18,22 @@ const MainPage = (props: Props) => {
   }, [isMenuToggled]);
 
   return (
-    <div className="flex flex-col items-center bg-gray-100 min-h-screen w-screen ">
-      <div className="flex flex-col  w-screen relative">
-        {/* Navbar */}
-        <div className="sticky top-0 left-0 w-full bg-gray-100 z-45 shadow-md rounded-b-2xl">
-          <Navbar
-            setIsMenuToggled={setIsMenuToggled}
-            isMenuToggled={isMenuToggled}
-            selectedPage={selectedPage}
-            setSelectedPage={setSelectedPage}
-          />
-        </div>
-        <Outlet />
-      </div>
+    <div className="flex flex-col items-center bg-gray-100 min-h-screen w-screen">
+  <div className="flex flex-col w-screen relative">
+    {/* Navbar */}
+    <div className="fixed top-0 left-0 w-full bg-gray-100 z-45 shadow-md rounded-b-2xl">
+      <Navbar
+        setIsMenuToggled={setIsMenuToggled}
+        isMenuToggled={isMenuToggled}
+        selectedPage={selectedPage}
+        setSelectedPage={setSelectedPage}
+      />
     </div>
+    <div className="mt-22">
+      <Outlet />
+    </div>
+  </div>
+</div>
   );
 };
 

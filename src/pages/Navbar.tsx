@@ -81,7 +81,7 @@ const Navbar = ({
         onClick={isCartPage ? handleTrashClick : handleCartClick}
         className="absolute right-[3vw] translate-y-1"
       >
-        <img src={isCartPage ? Trash : Cart} alt="" className="size-10" />
+        <img src={isCartPage ? Trash : Cart} alt="" className="size-10 pointer-events-none" />
       </button>
       {!isMenuToggled ? (
         <button
@@ -89,13 +89,13 @@ const Navbar = ({
           onClick={() => setIsMenuToggled(true)}
           className="absolute left-[3vw] translate-y-1"
         >
-          {!isMenuToggled && <img src={Menu} alt="" className="size-10" />}
+          {!isMenuToggled && <img src={Menu} alt="" className="size-10 pointer-events-none" />}
         </button>
       ) : (
         <img
           src={Cancel}
           alt=""
-          className="absolute left-[3vw] translate-y-1 size-10"
+          className="absolute left-[3vw] translate-y-1 size-10 pointer-events-none"
         />
       )}
 

@@ -50,9 +50,9 @@ const SignIn = ({ setIsLogin, changeData, submitData, formData }: Props) => {
             onMouseLeave={() => setShowPassword(false)}
           >
             {showPassword ? (
-              <img src={eye} alt="*" />
+              <img src={eye} alt="*" className=" pointer-events-none" />
             ) : (
-              <img src={eyeOff} alt="*" />
+              <img src={eyeOff} alt="*" className=" pointer-events-none"  />
             )}
           </button>
         </div>

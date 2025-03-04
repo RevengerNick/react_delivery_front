@@ -1,7 +1,8 @@
 import { SelectedPage } from "@/types/SelectedPage";
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import profileDefault from "@/assets/profileDefault.svg"
 
 type Props = {
   isMenuToggled: boolean;
@@ -16,6 +17,13 @@ const NavbarMenu = ({
   setSelectedPage,
   setIsMenuToggled,
 }: Props) => {
+
+const [profileData, setProfileData] = useState<{email: string, name: string, role: string}>({email: "", name: "", role: ""});
+  useEffect(() => {
+  const storedData = localStorage.getItem("profileData");
+  setProfileData(storedData ? JSON.parse(storedData) : null)
+}, [])
+
   const navigate = useNavigate();
   const menuRef = useRef<HTMLDivElement>(null);
   const handleClickOutsideDish = (e: MouseEvent) => {
@@ -30,7 +38,7 @@ const NavbarMenu = ({
   }, []);
 
   const buttonClass =
-    "w-full   text-lg font-semibold p-2 py-2 hover:bg-gray-200 w-[40vw] active:bg-gray-400 rounded-2xl duration-400";
+    "w-full text-lg font-semibold p-2 py-2 hover:bg-amber-100 w-[40vw] active:bg-gray-400 rounded-2xl duration-400";
 
   return (
     <AnimatePresence>
@@ -50,8 +58,15 @@ const NavbarMenu = ({
                      w-[70vw] min-w-[200px] bg-gray-50 text-center"
             >
               <div className="flex flex-col items-center">
-                <div className="flex h-30 items-center"></div>
+                <div className="flex h-30 items-center">
+                  <img src={profileDefault} alt="" className="size-30 p-3 " />
+                  <div className=" text-lg">
+                  <h1>{profileData.name}</h1>
+                  <p>{profileData.email}</p>
+                  </div>
+                </div>
                 <div className=" bg-gray-100 rounded-3xl"></div>
+                
                 {navItems.map((item, index) => (
                   <button
                     key={index}

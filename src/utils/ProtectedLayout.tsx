@@ -3,6 +3,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import api from "./axiosInstance";
 
 const ProtectedLayout = () => {
+  console.log("ProtectedLayout render")
   const token = localStorage.getItem("accessToken");
 
   useEffect(() => {

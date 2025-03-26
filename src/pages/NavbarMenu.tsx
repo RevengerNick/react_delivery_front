@@ -53,9 +53,9 @@ const [profileData, setProfileData] = useState<{email: string, name: string, rol
           >
             <div
               ref={menuRef}
-              style={{ maxHeight: "calc(100vh - 100px)" }}
-              className="absolute top-22 left-8 h-full rounded-3xl shadow-2xl overflow-auto
-                     w-[70vw] min-w-[200px] bg-gray-50 text-center"
+              style={{ maxHeight: "calc(100vh - 120px)" }}
+              className="absolute top-26 left-8 h-full rounded-3xl shadow-2xl overflow-auto
+                     w-[30vw] min-w-[400px] bg-gray-50 text-center"
             >
               <div className="flex flex-col items-center">
                 <div className="flex h-30 items-center">

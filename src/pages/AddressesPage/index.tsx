@@ -1,8 +1,9 @@
+import UserMap from "@/utils/UserMap"
 
 
 const index = () => {
   return (
-    <div>index</div>
+    <UserMap />
   )
 }
 

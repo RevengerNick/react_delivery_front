@@ -1,16 +1,16 @@
 // useFetchMenu.ts
 import { useState, useEffect } from "react";
 import api from "./axiosInstance";
-import { Dish, RestaurantProps } from "@/types/dishInterface";
+import { Dish } from "@/types/dishInterface";
 
 interface FetchMenuState {
-  RestaurantList: RestaurantProps[] | null;
   loading: boolean;
   error: string | null;
 }
 
 const useFetchMenu = (
   refresh: number,
+  restaurantId: number,
   searchText: string,
   setAllDishes: React.Dispatch<React.SetStateAction<Dish[]>>,
   setSearchDishes: React.Dispatch<React.SetStateAction<Dish[]>>,
@@ -18,29 +18,11 @@ const useFetchMenu = (
   setIsSearching: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
   const [state, setState] = useState<FetchMenuState>({
-    RestaurantList: null,
     loading: false,
     error: null,
   });
 
   useEffect(() => {
-    api.get("/restaurants")
-    .then((response) => {
-      const restaurant: RestaurantProps[] = response.data.map((item: any) => ({
-        id: item.id,
-        name: item.name,
-        latitude: item.latitude,
-        longitude: item.longitude,
-        description: item.description ?? "", // Если null, заменяем на пустую строку
-        imageUrl: import.meta.env.VITE_API_BASE + (item.imageUrl ?? ""), // Если null, заменяем на пустую строку
-        thumbnailUrl: import.meta.env.VITE_API_BASE + (item.thumbnailUrl ?? ""), // Если null, заменяем на пустую строку
-        topImageUrl: import.meta.env.VITE_API_BASE + (item.topImageUrl ?? ""), // Если null, заменяем на пустую строку
-        createdAt: item.createdAt,
-        updatedAt: item.updatedAt,
-      }));
-      console.log(restaurant.map((index) => {index.imageUrl}))
-      setState((prev) => ({ ...prev, RestaurantList: restaurant }));
-    })
     if (searchText.length === 0) {
       const FetchMenuData = async () => {
         setState((prev) => ({ ...prev, loading: true, error: null }));
@@ -67,7 +49,7 @@ const useFetchMenu = (
               restaurantId: item.dish.restaurantId,
             }));
           }
-          const dishesResponse = await api.get("/dishes");
+          const dishesResponse = await api.get(`/restaurants/${restaurantId}/dishes`);
           const allItems = dishesResponse.data.map((dish: any) => ({
             dishId: dish.id,
             name: dish.name,
@@ -75,7 +57,7 @@ const useFetchMenu = (
             ingredients: JSON.parse(dish.ingredients),
             price: dish.price,
             imageUrl: import.meta.env.VITE_API_BASE + dish.imageUrl,
-            thumbnailUrl: import.meta.env.VITE_API_BASE + dish.imageUrl, //УДАЛЕНО ПОЧЕМУ ТО dish.thumbnailUrl
+            thumbnailUrl: import.meta.env.VITE_API_BASE + dish.imageUrl,
             category: dish.category,
             quantity: 0,
             isAvailable: dish.isAvailable,
@@ -93,10 +75,12 @@ const useFetchMenu = (
             return cartDish ? cartDish : dish; // Если есть в корзине, берём оттуда, иначе оставляем исходный
           });
           setAllDishes(updatedAllDishes);
-          setState((prev) => ({ ...prev, loading: false, error: null }));
+          setState({ loading: false, error: null });
         } catch (err) {
-          setState((prev) => ({ ...prev, loading: false,
-            error: err instanceof Error ? err.message : "Unknown error", }));
+          setState({
+            loading: false,
+            error: err instanceof Error ? err.message : "Unknown error",
+          });
         }
       };
 
@@ -127,11 +111,13 @@ const useFetchMenu = (
               setFuzzySearch(false);
             }
             setSearchDishes(dishes);
-            setState((prev) => ({ ...prev, loading: false, error: null }));
+            setState({ loading: false, error: null });
           });
       } catch (err) {
-        setState((prev) => ({ ...prev, loading: false,
-          error: err instanceof Error ? err.message : "Unknown error", }));
+        setState({
+          loading: false,
+          error: err instanceof Error ? err.message : "Unknown error",
+        });
       }
     }
   }, [refresh, searchText]); // Зависимость от URL и параметров

@@ -4,12 +4,15 @@ import { Dish } from "@/types/dishInterface";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import useFetchCart from "@/utils/useFetchCart";
+import Navbar from "../Navbar";
+import { SelectedPage } from "@/types/SelectedPage";
 
 const Cart = () => {
   const navigate = useNavigate();
   const [dishesCart, setDishesCart] = useState<Dish[]>([]);
   const [totalDiscount, setTotalDiscount] = useState(10);
   const [refresh, setRefresh] = useState(0);
+  const [selectedPage, setSelectedPage] = useState(SelectedPage.Cart);
 
   const { loading, error } = useFetchCart(refresh, setDishesCart);
 
@@ -28,7 +31,7 @@ const Cart = () => {
         dish.id === id ? { ...dish, ...updatedFields } : dish
       )
     );
-    setRefresh((prev) => prev + 1);
+    //setRefresh((prev) => prev + 1);
   };
 
   const writeDishes = () => {
@@ -55,6 +58,8 @@ const Cart = () => {
   }, [dishesCart, refresh]);
 
   return (
+    
+    <div className="w-full">
     <div
       className="flex items-center min-w-60 w-full flex-col pb-2 overflow-auto"
       style={
@@ -129,6 +134,7 @@ const Cart = () => {
           )}
         </div>
       </motion.div>
+    </div>
     </div>
   );
 };

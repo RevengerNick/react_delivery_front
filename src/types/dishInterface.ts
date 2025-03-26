@@ -12,5 +12,18 @@ export interface Dish {
   isAvailable?: boolean; // Опционально
   createdAt?: string; // Опционально
   updatedAt?: string; // Опционально
-  restaurantId?: number; // Опционально
+  restaurantId: number; // Опционально
+}
+
+export interface RestaurantProps {
+  id: number;
+  name: string;
+  latitude: number;
+  longitude: number;
+  description: string | null;
+  imageUrl: string | null;
+  thumbnailUrl: string | null;
+  topImageUrl: string | null;
+  createdAt: string;
+  updatedAt: string;
 }

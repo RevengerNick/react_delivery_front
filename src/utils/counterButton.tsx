@@ -1,13 +1,15 @@
 import { useState } from "react";
-import addCart from "@/assets/buttons/addCart.svg";
+import { BiSolidCartAdd } from "react-icons/bi";
 import api from "./axiosInstance";
 import ConfirmButton from "@/utils/ConfirmButton";
+import { Dish } from "@/types/dishInterface";
 
 type Props = {
   initialCount?: number;
   initialId?: number;
   dishId: number;
   setRefresh: React.Dispatch<React.SetStateAction<number>>
+  updateDish?: (updatedFields: Partial<Dish>, id?: number) => void;
   setDishToggled: React.Dispatch<React.SetStateAction<boolean>>
   
 };
@@ -17,6 +19,7 @@ const СounterButton = ({
   initialId,
   setRefresh,
   setDishToggled,
+  updateDish,
   initialCount = 0,
 }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -42,7 +45,10 @@ const СounterButton = ({
         .patch(`/cart/${id}`, { quantity: quantity })
         .then((response) => {
           if (response.status === 200) {
-            setCount(quantity); // Предполагаю, что setCount обновляет состояние
+            setCount(quantity);
+            if (updateDish){
+              updateDish({ quantity: quantity }, id);
+            }
           }
         })
         .catch((error) => console.error("Ошибка:", error));
@@ -99,11 +105,7 @@ const СounterButton = ({
             className="absolute right-[2vw] -translate-y-12"
             onClick={() => addToCart(dishId)}
           >
-            <img
-              src={addCart}
-              alt="1"
-              className="size-10 pointer-events-none"
-            />
+            <BiSolidCartAdd className="size-12 rounded-3xl p-2 shadow-md hover:bg-amber-200 duration-150"/>
           </button>
         </div>
       )}

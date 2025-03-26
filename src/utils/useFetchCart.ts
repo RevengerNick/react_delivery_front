@@ -24,24 +24,29 @@ const useFetchCart = (
         setState((prev) => ({ ...prev, loading: true, error: null }));
     try {
         const cartResponse = await api.get("/cart");
-        const cartItems = cartResponse.data.items.map((item: any) => ({
-          id: item.id,
-          dishId: item.dish.id,
-          name: item.dish.name,
-          description: item.dish.description,
-          ingredients: JSON.parse(item.dish.ingredients),
-          price: item.dish.price,
-          imageUrl: import.meta.env.VITE_API_BASE + item.dish.imageUrl,
-          thumbnailUrl: import.meta.env.VITE_API_BASE + item.dish.thumbnailUrl,
-          category: item.dish.category,
-          quantity: item.quantity,
-          isAvailable: item.dish.isAvailable,
-          createdAt: item.dish.createdAt,
-          updatedAt: item.dish.updatedAt,
-          restaurantId: item.dish.restaurantId,
-        }));
-        setState({ data: cartItems, loading: false, error: null });
-        setDishesCart(cartItems)
+        if (cartResponse.data.items){
+          const cartItems = cartResponse.data.items.map((item: any) => ({
+            id: item.id,
+            dishId: item.dish.id,
+            name: item.dish.name,
+            description: item.dish.description,
+            ingredients: JSON.parse(item.dish.ingredients),
+            price: item.dish.price,
+            imageUrl: import.meta.env.VITE_API_BASE + item.dish.imageUrl,
+            thumbnailUrl: import.meta.env.VITE_API_BASE + item.dish.imageUrl,
+            category: item.dish.category,
+            quantity: item.quantity,
+            isAvailable: item.dish.isAvailable,
+            createdAt: item.dish.createdAt,
+            updatedAt: item.dish.updatedAt,
+            restaurantId: item.dish.restaurantId,
+          }));
+          setState({ data: cartItems, loading: false, error: null });
+          setDishesCart(cartItems)
+        } else {
+          setState({ data: [], loading: false, error: null });
+          setDishesCart([])
+        }
       } catch (err) {
         setState({
           data: null,

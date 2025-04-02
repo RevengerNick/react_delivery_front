@@ -2,35 +2,53 @@ import { useState, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import axios from "axios";
+import { BiCurrentLocation } from "react-icons/bi"; // Импорт иконки
 
 const UserMap = () => {
   const [initialPosition, setInitialPosition] = useState<[number, number] | null>(null);
   const [markerPosition, setMarkerPosition] = useState<[number, number] | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<any[]>([]);
-  const searchZoomLevel = 15; // Настраиваемый уровень зума при поиске
+  const [autoZoom, setAutoZoom] = useState(false);
+  const [zoomLevel, setZoomLevel] = useState(13);
+  const searchZoomLevel = 15;
 
-  // Компонент для отслеживания перемещения карты
+  const confirmPosition = () => {
+    if (markerPosition) {
+      console.log("Подтверждённая позиция:", markerPosition);
+    }
+  };
+
   const MapEvents = () => {
     const map = useMapEvents({
       move: () => {
-        const center = map.getCenter();
-        setMarkerPosition([center.lat, center.lng]);
+        if (!autoZoom) {
+          const center = map.getCenter();
+          setMarkerPosition([center.lat, center.lng]);
+        }
+      },
+      zoom: () => {
+        setAutoZoom(false);
+        setZoomLevel(map.getZoom());
       },
     });
+
     return null;
   };
 
-  // Компонент для центрирования и зума карты
+  // Центрирование карты
   const RecenterMap = ({ center, zoom }: { center: [number, number]; zoom?: number }) => {
     const map = useMap();
     useEffect(() => {
-      map.setView(center, zoom || map.getZoom()); // Устанавливаем центр и зум (если указан)
-    }, [center, zoom, map]);
+      if (autoZoom) {
+        map.setView(center, zoom || map.getZoom(), { animate: true });
+        setAutoZoom(false);
+      }
+    }, [center, zoom, autoZoom, map]);
     return null;
   };
 
-  // Начальная геолокация
+  // Получение геолокации
   useEffect(() => {
     if (!navigator.geolocation) {
       console.error("Геолокация не поддерживается браузером");
@@ -46,7 +64,7 @@ const UserMap = () => {
     );
   }, []);
 
-  // Поиск по адресу через Nominatim API
+  // Поиск по адресу
   useEffect(() => {
     if (searchQuery.length < 3) {
       setSearchResults([]);
@@ -65,19 +83,23 @@ const UserMap = () => {
     fetchLocations();
   }, [searchQuery]);
 
-  // Подтверждение позиции
-  const confirmPosition = () => {
-    if (markerPosition) {
-      console.log("Подтверждённая позиция:", markerPosition);
-    }
-  };
-
-  // Выбор локации из списка
+  // Выбор локации
   const selectLocation = (lat: string, lon: string) => {
     const newPos: [number, number] = [parseFloat(lat), parseFloat(lon)];
-    setMarkerPosition(newPos); // Обновляем маркер
+    setMarkerPosition(newPos);
+    setAutoZoom(true);
+    setZoomLevel(searchZoomLevel);
     setSearchQuery("");
     setSearchResults([]);
+  };
+
+  // Обработчик кнопки "Моё местоположение"
+  const goToMyLocation = () => {
+    if (initialPosition) {
+      setMarkerPosition(initialPosition);
+      setAutoZoom(true);
+      setZoomLevel(searchZoomLevel);
+    }
   };
 
   return (
@@ -92,7 +114,7 @@ const UserMap = () => {
           className="w-full p-2 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:border-blue-500"
         />
         {searchResults.length > 0 && (
-          <ul className="absolute z-50 w-full bg-white border border-gray-200 rounded-lg mt-1 max-h-60 overflow-y-auto">
+          <ul className="absolute z-30 w-full bg-white border border-gray-200 rounded-lg mt-1 max-h-60 overflow-y-auto">
             {searchResults.map((result) => (
               <li
                 key={result.place_id}
@@ -106,14 +128,15 @@ const UserMap = () => {
         )}
       </div>
 
-      {/* Карта и кнопка */}
-      <div className="w-full h-[400px] relative z-30">
+      {/* Карта */}
+      <div className="w-full h-[400px] relative z-25">
         {initialPosition ? (
           <>
             <MapContainer
               center={initialPosition}
-              zoom={13}
-              className="h-full w-full"
+              zoom={zoomLevel}
+              className="h-full w-full "
+              scrollWheelZoom={true} // Включаем зум колесиком
             >
               <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -124,9 +147,17 @@ const UserMap = () => {
                   <Popup>Это ваше местоположение</Popup>
                 </Marker>
               )}
-              <MapEvents /> {/* Отслеживаем перемещение */}
-              {markerPosition && <RecenterMap center={markerPosition} zoom={searchZoomLevel} />} {/* Центрируем и зумим */}
+              <MapEvents />
+              {markerPosition && <RecenterMap center={markerPosition} zoom={searchZoomLevel} />}
             </MapContainer>
+
+            {/* Кнопка "Моё местоположение" */}
+            <button
+              onClick={goToMyLocation}
+              className="absolute bottom-4 right-4 p-3 z-400 bg-white shadow-lg rounded-full border border-gray-300 hover:bg-gray-100"
+            >
+              <BiCurrentLocation size={24} className="text-gray-600" />
+            </button>
             <button
               onClick={confirmPosition}
               className="absolute bottom-4 left-1/2 transform -translate-x-1/2 px-4 py-2 bg-blue-500 text-white z-400 rounded-lg shadow-md hover:bg-blue-600"

@@ -10,15 +10,15 @@ const ProtectedLayout = () => {
     api
       .get("/users/me")
       .then((response) => {
-        const { name, email, role } = response.data; // Деструктуризация объекта
+        const { id, name, email, role, address, latitude, longitude } = response.data;
         localStorage.setItem(
           "profileData",
-          JSON.stringify({ name, email, role })
-        ); // Для кортежа
+          JSON.stringify({ id, name, email, role, address, latitude, longitude })
+        );
       })
       .catch((error) => console.error("Ошибка загрузки:", error));
   }, []);
-
+  
   if (!token) {
     return <Navigate to="/login" replace />;
   }

@@ -3,7 +3,7 @@ import SignUp from "@/pages/AutorizationPage/signUp";
 import SignIn from "@/pages/AutorizationPage/signIn";
 import foodDay from "@/assets/foodDay.svg";
 import { motion } from "framer-motion";
-import api from "@/utils/axiosInstance";
+import api from "@/utils/Static/axiosInstance";
 import { ToastContainer, toast } from "react-toastify";
 //import "react-toastify/dist/ReactToastify.css";
 

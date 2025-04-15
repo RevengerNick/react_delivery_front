@@ -1,7 +1,7 @@
 import { SelectedPage } from "@/types/SelectedPage";
 import MainPage from "@/pages/MainPage/Main";
 import CartPage from "@/pages/CartPage/";
-import HistoryPage from "@/pages/HistoryPage";
+import HistoryPage from "@/pages/OrdersPage";
 import DiscountsPage from "@/pages/DiscountsPage";
 import AddressesPage from "@/pages/AddressesPage";
 import ProfilePage from "@/pages/ProfilePage";

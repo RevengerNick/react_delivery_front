@@ -3,22 +3,69 @@ import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from "re
 import "leaflet/dist/leaflet.css";
 import axios from "axios";
 import { BiCurrentLocation } from "react-icons/bi"; // Импорт иконки
+import { FaUtensils } from "react-icons/fa";
+import { RestaurantProps } from "@/types/dishInterface";
+import api from "./Static/axiosInstance";
 
-const UserMap = () => {
+interface UserMapProps {
+  restaurants: RestaurantProps[];
+}
+
+const UserMap: React.FC<UserMapProps> = ({ restaurants }) => {
   const [initialPosition, setInitialPosition] = useState<[number, number] | null>(null);
-  const [markerPosition, setMarkerPosition] = useState<[number, number] | null>(null);
+  const [markerPosition, setMarkerPosition] = useState<[number, number, string?] | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [autoZoom, setAutoZoom] = useState(false);
   const [zoomLevel, setZoomLevel] = useState(13);
-  const searchZoomLevel = 15;
+  const searchZoomLevel = 17;
 
-  const confirmPosition = () => {
-    if (markerPosition) {
-      console.log("Подтверждённая позиция:", markerPosition);
+  const fetchLocationName = async (lat: number, lon: number): Promise<string> => {
+    try {
+      const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+      const data = await res.json();
+      return data?.address?.city || data?.address?.town || data?.address?.village || data?.address?.state || "Неизвестно";
+    } catch (e) {
+      console.error("Ошибка при определении названия места:", e);
+      return "Неизвестно";
     }
   };
-
+  const confirmPosition = async () => {
+    if (!markerPosition) return;
+  
+    const [lat, lon] = markerPosition;
+  
+    try {
+      // Получаем адрес через Nominatim
+      const { data } = await api.get("https://nominatim.openstreetmap.org/reverse", {
+        params: {
+          lat,
+          lon,
+          format: "json",
+        },
+      });
+  
+      const address = data.display_name || "Неизвестный адрес";
+  
+      console.log("Подтверждённая позиция:", {
+        latitude: lat,
+        longitude: lon,
+        address,
+      });
+  
+      // Отправляем PATCH-запрос в твой API
+      await api.patch("/users/me/location", {
+        address,
+        latitude: lat,
+        longitude: lon,
+      });
+  
+      console.log("✅ Локация успешно обновлена");
+  
+    } catch (error) {
+      console.error("❌ Ошибка при подтверждении позиции:", error);
+    }
+  };
   const MapEvents = () => {
     const map = useMapEvents({
       move: () => {
@@ -57,6 +104,7 @@ const UserMap = () => {
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const newPos: [number, number] = [pos.coords.latitude, pos.coords.longitude];
+        
         setInitialPosition(newPos);
         setMarkerPosition(newPos);
       },
@@ -143,12 +191,17 @@ const UserMap = () => {
                 attribution='© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               />
               {markerPosition && (
-                <Marker position={markerPosition}>
+                <Marker position={[markerPosition[0], markerPosition[1]]}>
                   <Popup>Это ваше местоположение</Popup>
                 </Marker>
               )}
+              ({restaurants && restaurants.map((index) => (
+                <Marker position={[index.latitude, index.longitude]}>
+                <Popup>{index.name}</Popup>
+              </Marker>
+              ))})
               <MapEvents />
-              {markerPosition && <RecenterMap center={markerPosition} zoom={searchZoomLevel} />}
+              {markerPosition && <RecenterMap center={[markerPosition[0], markerPosition[1]]} zoom={searchZoomLevel} />}
             </MapContainer>
 
             {/* Кнопка "Моё местоположение" */}

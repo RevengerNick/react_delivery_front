@@ -7,8 +7,8 @@ import {
 import AuthForm from "./pages/AutorizationPage/AuthForm";
 import Navbar from "./pages/Navbar";
 import MainPage from "./pages/MainPage/Main";
-import ProtectedLayout from "./utils/ProtectedLayout";
-import HistoryPage from "@/pages/HistoryPage";
+import ProtectedLayout from "./utils/Static/ProtectedLayout";
+import HistoryPage from "@/pages/OrdersPage";
 import Cart from "@/pages/CartPage";
 import DiscountsPage from "@/pages/DiscountsPage";
 import HelpPage from "@/pages/HelpPage";
@@ -29,7 +29,7 @@ const App = () => {
             <Route index element={<MainPage />} /> {/* Главная страница для / */}
             <Route path="dashboard" element={<MainPage />} />
             <Route path="cart" element={<Cart />} />
-            <Route path="history" element={<HistoryPage />} />
+            <Route path="orders" element={<HistoryPage />} />
             <Route path="discounts" element={<DiscountsPage />} />
             <Route path="addresses" element={<AdressesPage />} />
             <Route path="profile" element={<ProfilePage />} />

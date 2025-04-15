@@ -1,10 +1,10 @@
 // useFetchMenu.ts
 import { useState, useEffect } from "react";
-import api from "./axiosInstance";
+import api from "../Static/axiosInstance";
 import { Dish, RestaurantProps } from "@/types/dishInterface";
 
 interface FetchMenuState {
-  RestaurantList: RestaurantProps[] | null;
+  RestaurantList: RestaurantProps[];
   loading: boolean;
   error: string | null;
 }
@@ -18,7 +18,7 @@ const useFetchMenu = (
   setIsSearching: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
   const [state, setState] = useState<FetchMenuState>({
-    RestaurantList: null,
+    RestaurantList: [],
     loading: false,
     error: null,
   });

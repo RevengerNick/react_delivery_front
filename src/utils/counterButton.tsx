@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { BiSolidCartAdd } from "react-icons/bi";
-import api from "./axiosInstance";
+import api from "./Static/axiosInstance";
 import ConfirmButton from "@/utils/ConfirmButton";
 import { Dish } from "@/types/dishInterface";
 

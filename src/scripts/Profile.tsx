@@ -1,4 +1,4 @@
-import api from "../utils/axiosInstance";
+import api from "../utils/Static/axiosInstance";
 
 type Props = {};
 

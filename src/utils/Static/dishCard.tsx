@@ -1,7 +1,7 @@
 import { Dish} from "@/types/dishInterface";
 import СounterButton from "@/utils/counterButton.tsx";
 
-import DishPage from "@/utils/dishPage";
+import DishPage from "@/utils/Static/dishPage";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 

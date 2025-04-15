@@ -1,7 +1,7 @@
 import { Dish } from "@/types/dishInterface";
-import DishCard from "@/utils/dishCard";
-import useFetchMenu from "@/utils/useFetchMenu";
-import useFetchRestaurant from "@/utils/useFetchRestaurant";
+import DishCard from "@/utils/Static/dishCard";
+import useFetchMenu from "@/utils/UseHooks/useFetchMenu";
+import useFetchRestaurant from "@/utils/UseHooks/useFetchRestaurant";
 import { IoIosCart } from "react-icons/io";
 import { useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
